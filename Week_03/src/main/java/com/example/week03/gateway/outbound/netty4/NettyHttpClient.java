@@ -1,10 +1,5 @@
-**学习笔记**
---------------------
-**main方法参数为:** -DproxyServer=http://localhost:8801,http://localhost:8802,http://localhost:8803
+package com.example.week03.gateway.outbound.netty4;
 
-### 作业一 使用netty实现后端http访问
-
-```java
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -52,49 +47,3 @@ public class NettyHttpClient {
         return clientHandler.getData();
     }
 }
-```
-
-### 作业二 实现过滤器
-
-```java
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.http.FullHttpRequest;
-
-/**
- * 网关过滤器（添加自定义请求头）
- *
- * @author 19921204
- * @date 2020/11/01
- */
-public class HttpHeadersFilter implements HttpRequestFilter {
-    @Override
-    public void filter(FullHttpRequest fullRequest, ChannelHandlerContext ctx) {
-        fullRequest.headers().add("nio", "19921204");
-    }
-}
-```
-
-### 作业三 实现路由
-
-```java
-import java.util.List;
-import java.util.Random;
-
-/**
- * 随机访问路由
- *
- * @author 19921204
- * @date 2020/11/01
- */
-public class RandomLoadBalancerRouter implements HttpEndpointRouter {
-    private Random random = new Random();
-
-    @Override
-    public String route(List<String> endpoints) {
-        int size = endpoints.size();
-        int nextInt = random.nextInt(size * 100);
-        int slot = nextInt % size;
-        return endpoints.get(slot);
-    }
-}
-```
